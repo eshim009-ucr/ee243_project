@@ -3,28 +3,31 @@
 MAIN_TEX=main.tex
 
 # Output PDF files #
-PDF=ee243_project_proposal.pdf
+MAIN_PDF=ee243_project_proposal.pdf
 
 # pdflatex build logs #
-LOG=$(subst .pdf,.log,$(PDF))
+LOG=$(subst .pdf,.log,$(MAIN_PDF))
 
 # pdflatex temp files #
-AUX=$(subst .pdf,.aux,$(PDF))
-OUT=$(subst .pdf,.out,$(PDF))
+AUX=$(subst .pdf,.aux,$(MAIN_PDF))
+OUT=$(subst .pdf,.out,$(MAIN_PDF))
 
 # Spellcheck backup files #
 BAK=$(wildcard *.tex.bak)
 
+# Citation source
+BIB=$(wildcard *.bib)
+
 
 ### TARGETS ###
 .PHONY: all, check, new, clean, clean-tmp
-all: $(PDF)
+all: $(MAIN_PDF)
 
 # Build PDF #
-$(PDF): *.tex
-	pdflatex --halt-on-error \
-		--jobname $(basename $(PDF)) \
-		$(basename $(MAIN_TEX))
+$(MAIN_PDF): $(MAIN_TEX) $(BIB)
+	pdflatex --jobname $(basename $(MAIN_PDF)) $(basename $(MAIN_TEX))
+	biber $(basename $(MAIN_PDF))
+	pdflatex --jobname $(basename $(MAIN_PDF)) $(basename $(MAIN_TEX))
 
 # Spellcheck source files #
 check:
@@ -34,7 +37,7 @@ check:
 
 # Remove all output files #
 clean: clean-tmp
-	rm -f $(PDF)
+	rm -f $(MAIN_PDF)
 
 # Remove temporary files #
 clean-tmp:
