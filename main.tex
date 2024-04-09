@@ -1,4 +1,4 @@
-\documentclass[12pt,letterpaper]{article}
+\documentclass[12pt,letterpaper,english]{article}
 
 \include{header}
 \hypersetup{
@@ -20,9 +20,8 @@
 \end{center}
 
 
-\section*{Key Publication}
-
-\todo[Reference to the most relevant research paper.]
+\nocite{main}
+\printbibliography[title=Key Publication, keyword=main]
 
 
 \section*{Topic Introduction}
@@ -30,9 +29,7 @@
 \todo[A concise introduction to the topic.]
 
 
-\section*{Related Publications}
-
-\todo[Overview of related works.]
+\printbibliography[title=Related Publications, notkeyword=main]
 
 
 \section*{Planned Activities}
