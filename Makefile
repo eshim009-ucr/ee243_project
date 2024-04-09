@@ -24,9 +24,10 @@ BIB=$(wildcard *.bib)
 all: $(MAIN_PDF)
 
 # Build PDF #
-$(MAIN_PDF): $(MAIN_TEX) $(BIB)
+$(MAIN_PDF): $(wildcard *.tex) $(BIB)
 	pdflatex --jobname $(basename $(MAIN_PDF)) $(basename $(MAIN_TEX))
 	biber $(basename $(MAIN_PDF))
+	pdflatex --jobname $(basename $(MAIN_PDF)) $(basename $(MAIN_TEX))
 	pdflatex --jobname $(basename $(MAIN_PDF)) $(basename $(MAIN_TEX))
 
 # Spellcheck source files #
