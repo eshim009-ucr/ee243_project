@@ -10,6 +10,7 @@
 
 
 \addbibresource{cites.bib}
+\addbibresource{cites-to-main.bib}
 
 
 \begin{document}
@@ -19,9 +20,10 @@
 	Clarity Shimoniak
 \end{center}
 
+\section*{Key Publication}
 
 \nocite{main}
-\printbibliography[title=Key Publication, keyword=main]
+\printbibliography[heading=none, keyword=main]
 
 
 \section*{Topic Introduction}
@@ -29,7 +31,16 @@
 \todo[A concise introduction to the topic.]
 
 
-\printbibliography[title=Related Publications, notkeyword=main]
+\section*{Related Publications}
+
+\nocite{phipps2023pre}
+\nocite{baedorf2023reverse}
+\nocite{aydin2023fpga}
+\nocite{pistellato2023quantization}
+\nocite{madineni2023parameterizable}
+\nocite{naufal2023comparative}
+\nocite{yan2023end}
+\printbibliography[heading=none, notkeyword=main]
 
 
 \section*{Planned Activities}
