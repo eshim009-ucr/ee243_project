@@ -23,8 +23,7 @@
 
 \section*{Key Publication}
 
-\nocite{main}
-\printbibliography[heading=none, keyword=main]
+\fullcite{main}
 
 
 \section*{Topic Introduction}
@@ -34,30 +33,31 @@
 
 \section*{Related Publications}
 
-% Cites to main
-\nocite{phipps2023pre}
-\nocite{baedorf2023reverse}
-\nocite{aydin2023fpga}
-\nocite{pistellato2023quantization}
-\nocite{madineni2023parameterizable}
-\nocite{naufal2023comparative}
-\nocite{yan2023end}
-% Cites from main
-\nocite{iandola2016squeezenet}
-\nocite{howard2017mobilenets}
-\nocite{sandler2018mobilenetv2}
-\nocite{zhang2018shufflenet}
-\nocite{mehta2018espnet}
-\nocite{yaozong2019design}
-\nocite{bingchen2019fpga}
-\nocite{binfeng2019design}
-\nocite{hui2021convolutional}
-\printbibliography[heading=none, notkeyword=main]
+\begin{itemize}
+	\item \citeauthor{madineni2023parameterizable} propose a system implemented
+	in the new Chisel hardware design language that claims improvements over
+	\citetitle{main} and several similar implementation.
+	\item \citeauthor{baedorf2023reverse} reference \citetitle{main} as a method
+	of classification that was passed over for neural network analysis of
+	abnormal breathing.
+	\item \citeauthor{phipps2023pre} contrast the performance of
+	\citetitle{main} against other similar models.
+	\item \citeauthor*{pistellato2023quantization} and \citeauthor*{yan2023end}
+	use \citetitle{main} as an example of techniques by which performance of
+	neural networks on FPGAs can be improved.
+	\item \citeauthor*{aydin2023fpga} and \citeauthor*{naufal2023comparative}
+	use \citetitle{main} as a generic example of the significance of hardware
+	acceleration for neural networks.
+\end{itemize}
 
 
 \section*{Planned Activities}
 
 \todo[Description of your planned activities.]
+
+
+\newpage
+\printbibliography
 
 
 \end{document}
