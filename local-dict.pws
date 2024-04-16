@@ -1,4 +1,5 @@
 personal_ws-1.1 en 0
+ESPNet
 NetMnist
 OmniVision
 Resnet
@@ -8,10 +9,17 @@ aydin
 baedorf
 binfeng
 bingchen
+espnet
 fpga
+howard
 hui
+iandola
 iCE
 madineni
+mehta
+MobileNet
+mobilenets
+mobilenetv
 naufal
 notkeyword
 pdfauthor
@@ -20,7 +28,13 @@ pdfsubject
 pdftitle
 phipps
 pistellato
+sandler
+ShuffleNet
+shufflenet
+SqueezeNet
+squeezenet
 utilisation
 xiaokang
 yan
 yaozong
+zhang
