@@ -16,9 +16,9 @@
 }
 
 
-\addbibresource{cites.bib}
-\addbibresource{cites-to-main.bib}
-\addbibresource{cites-from-main.bib}
+\addbibresource{models.bib}
+\addbibresource{fpga.bib}
+\addbibresource{old.bib}
 \newcommand{\citework}[1]{\citeauthor{#1} \autocite{#1}}
 \newcommand{\citeworks}[2]{%
 	\citeauthor*{#1} \autocite{#1} and \citeauthor*{#2} \autocite{#2}%
@@ -45,10 +45,7 @@
 
 \section*{Key Publication}
 
-In \citetitle*{main} \autocite{main}, \citeauthor{main} implement handwritten
-digit recognition using the MNIST dataset on a Xilinx Artix 7 FPGA. Their
-primary goal is to reduce the hardware resources usage and power consumption of
-the system while maintaining acceptable performance.
+\todo[Reference to the most relevant research paper.]
 
 
 \section*{Topic Introduction}
@@ -59,10 +56,13 @@ hardware like GPUs limits their viability for consumer applications. Increasing
 power efficiency and decreasing component cost would allow these models to be
 deployed far more widely.
 
+\citework{mobilenet2019fpga} and \citework{mobilenet2021fpga} implement the
+\citework{mobilenetv1} model on FPGAs to achieve this goal.
+
 
 \section*{Planned Activities}
 
-I plan to implement a system similar to \citeauthor*{main}'s using the Lattice
+I plan to implement a system similar to \citeauthor*{old}'s using the Lattice
 iCE40UP5k and a similar OmniVision camera. If time permits, I will also
 implement the system on other Lattice FPGAs of slightly higher and lower specs
 (LFE5U-25F-6 and iCE40LP1k respectively). Achieving similar results with these
@@ -72,29 +72,15 @@ other manufacturers using an open source toolchain.
 
 \section*{Related Publications}
 
+\todo[Overview of related works.]
+
 \begin{itemize}
-	\item \citework{madineni2023parameterizable} compare the results of their
-	Verilog generator to \autocite{main} in order to showcase the potential of
-	the Chisel HDL.
-	\item \citework{baedorf2023reverse} reference \autocite{main} as a method of
-	classification that was passed over for neural network analysis of abnormal
-	breathing.
-	\item \citework{phipps2023pre} contrast the performance of \autocite{main}
-	against other similar models.
-	\item \citeworks{pistellato2023quantization}{yan2023end} use \autocite{main}
-	as an example of techniques by which performance of neural networks on FPGAs
-	can be improved.
-	\item \citeauthor{main} refers to
-	SqueezeNet \autocite{iandola2016squeezenet},
-	MobileNet \autocites{howard2017mobilenets}{sandler2018mobilenetv2},
-	ShuffleNet \autocite{zhang2018shufflenet}, and
-	ESPNet \autocite{mehta2018espnet}
+	\item \citeauthor{old} refers to
+	SqueezeNet \autocite{squeezenet},
+	MobileNet \autocites{mobilenetv1}{mobilenetv2},
+	ShuffleNet \autocite{shufflenetv1}, and
+	ESPNet \autocite{espnet}
 	as examples of model size reduction.
-	\item \citeauthor{main} compares results against those of
-	\citemoreworks{yaozong2019design}{xiaokang2019design}{binfeng2019design},
-	which use the heterogeneous Xilinx Zynq SoC platform and those of
-	\citeworks{bingchen2019fpga}{hui2021convolutional},
-	which use a Xilinx Spartan 6 and Artix 7 FPGAs respectively.
 \end{itemize}
 
 
