@@ -1,9 +1,17 @@
 personal_ws-1.1 en 0
 ESPNet
+MPSoC
+MobileNet
+MobileNetv
 NetMnist
 OmniVision
 Resnet
+ShuffleNet
+ShuffleNetv
+SqueezeNet
 TODO
+UltraScale
+Virtex
 Zynq
 aydin
 baedorf
@@ -13,11 +21,11 @@ espnet
 fpga
 howard
 hui
-iandola
 iCE
+iandola
 madineni
 mehta
-MobileNet
+mobilenet
 mobilenets
 mobilenetv
 naufal
@@ -28,11 +36,12 @@ pdfsubject
 pdftitle
 phipps
 pistellato
+rr
 sandler
-ShuffleNet
 shufflenet
-SqueezeNet
+shufflenetv
 squeezenet
+synetgy
 utilisation
 xiaokang
 yan

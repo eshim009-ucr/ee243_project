@@ -18,7 +18,7 @@
 
 \addbibresource{models.bib}
 \addbibresource{fpga.bib}
-\addbibresource{old.bib}
+\addbibresource{related.bib}
 \newcommand{\citework}[1]{\citeauthor{#1} \autocite{#1}}
 \newcommand{\citeworks}[2]{%
 	\citeauthor*{#1} \autocite{#1} and \citeauthor*{#2} \autocite{#2}%
@@ -45,7 +45,12 @@
 
 \section*{Key Publication}
 
-\todo[Reference to the most relevant research paper.]
+In \citetitle{mobilenet2019fpga} \autocite{mobilenet2019fpga},
+\citeauthor{mobilenet2019fpga} implement the MobileNet model
+\autocites{mobilenetv1}{mobilenetv2} on a Xilinx MPSoC board which integrates an
+FPGA and an ARM processor. They claim a more efficient FPGA implementation due
+to the use of specialized engines for standard and depthwise convolution as
+opposed to using the same engine for both.
 
 
 \section*{Topic Introduction}
@@ -56,31 +61,34 @@ hardware like GPUs limits their viability for consumer applications. Increasing
 power efficiency and decreasing component cost would allow these models to be
 deployed far more widely.
 
-\citework{mobilenet2019fpga} and \citework{mobilenet2021fpga} implement the
-\citework{mobilenetv1} model on FPGAs to achieve this goal.
-
 
 \section*{Planned Activities}
 
-I plan to implement a system similar to \citeauthor*{old}'s using the Lattice
-iCE40UP5k and a similar OmniVision camera. If time permits, I will also
-implement the system on other Lattice FPGAs of slightly higher and lower specs
-(LFE5U-25F-6 and iCE40LP1k respectively). Achieving similar results with these
-parts would show that the approach is generalizable to lower-cost parts from
-other manufacturers using an open source toolchain.
+I plan to implement a system similar to \citeauthor*{mobilenet2019fpga}'s using
+the Lattice iCE40UP5k FPGA instead of the heterogeneous Xilinx SoC. The focus
+will be on reducing power usage while maintaining a reasonable standard of speed
+and quality.
+
+If time permits, I will also implement the system on other Lattice FPGAs of
+slightly higher and lower specs (LFE5U-25F-6 and iCE40LP1k respectively).
+Achieving similar results without using an SoC would result in an implementation
+that is suited to more resource- and cost-constrained embedded applications.
 
 
 \section*{Related Publications}
 
-\todo[Overview of related works.]
-
 \begin{itemize}
-	\item \citeauthor{old} refers to
-	SqueezeNet \autocite{squeezenet},
-	MobileNet \autocites{mobilenetv1}{mobilenetv2},
-	ShuffleNet \autocite{shufflenetv1}, and
-	ESPNet \autocite{espnet}
-	as examples of model size reduction.
+	\item \citetitle{synetgy} \autocite{synetgy} uses a modified
+	ShuffleNetv2 \autocite{shufflenetv2} architecture optimized for FPGAs.
+	\item \citework{mobilenet2021fpga} use a Xilinx Virtex 7 FPGA to create a
+	high-performance MobileNet implementation capable of over $\SI{300}{FPS}$
+	and offering a speedup over various CPU and GPU implementations.
+	\item \citework{mobilenet2018fpga} use an Altera Arria 10 heterogeneous SoC
+	to create a high-performance MobileNetv2 implementation capable of over
+	$\SI{250}{FPS}$.
+	\item \citework{mobilenet2018rr} introduce RR-MobileNet, a variant of
+	MobileNetv1 that achieves over $\SI{120}{FPS}$ on a Xilinx heterogeneous
+	UltraScale MPSoC.
 \end{itemize}
 
 
