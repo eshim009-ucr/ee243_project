@@ -21,11 +21,14 @@ BIB=$(wildcard *.bib)
 BIB_TMP=$(wildcard *.bbl) $(wildcard *.bcf) $(wildcard *.blg) $(wildcard *.run.xml)
 
 ### TARGETS ###
-.PHONY: all, check, new, clean, clean-tmp
+.PHONY: all, check, new, clean, clean-tmp, cite
 all: $(MAIN_PDF)
 
 # Build PDF #
 $(MAIN_PDF): $(wildcard *.tex) $(BIB)
+	pdflatex --halt-on-error --jobname $(basename $(MAIN_PDF)) $(basename $(MAIN_TEX))
+
+cite:
 	pdflatex --halt-on-error --jobname $(basename $(MAIN_PDF)) $(basename $(MAIN_TEX))
 	biber $(basename $(MAIN_PDF))
 	pdflatex --halt-on-error --jobname $(basename $(MAIN_PDF)) $(basename $(MAIN_TEX))
