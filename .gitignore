@@ -2,3 +2,7 @@
 *.blif
 *.asc
 *.bin
+
+# Weight data files
+# Can be regenerated
+*.json
