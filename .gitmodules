@@ -1,0 +1,3 @@
+[submodule "solovyev"]
+	path = solovyev
+	url = git@github.com:ZFTurbo/MobileNet-in-FPGA.git
