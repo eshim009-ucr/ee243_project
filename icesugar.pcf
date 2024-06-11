@@ -1,0 +1,44 @@
+set_io CLOCK_25 35
+
+# //////////// ILI9341 ////////////// PMOD01
+set_io tft_cs     10
+set_io tft_sdo     6
+# set_io NC        3
+set_io tft_sck    40
+# set_io NC        9
+# set_io NC        4
+set_io tft_reset   2
+# set_io NC       47
+
+# set_io tft_sdi
+# set_io tft_dc
+
+# //////////// CAMERA /////////// PMOD02 PMOD03
+# set_io NC       46
+set_io CMOS_XCLK  44
+set_io CMOS_VSYNC 42
+set_io CMOS_SDAT  37
+# set_io NC       45
+set_io CMOS_PCLK  43
+set_io CMOS_HREF  38
+set_io CMOS_SCLK  36
+
+set_io CMOS_DB[6] 34
+set_io CMOS_DB[4] 31
+set_io CMOS_DB[2] 27
+set_io CMOS_DB[0] 25
+set_io CMOS_DB[7] 32
+set_io CMOS_DB[5] 28
+set_io CMOS_DB[3] 26
+set_io CMOS_DB[1] 23
+
+# set_io UART_RX
+# set_io UART_TX
+# set_io UART_CTS
+# set_io UART_RTS
+
+# set_io HEX0
+# set_io HEX1
+
+# set_io KEY
+# set_io LED
