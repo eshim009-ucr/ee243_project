@@ -1,4 +1,4 @@
-# Generated files
+# Intermediate build files
 *.blif
 *.asc
 *.bin
@@ -6,3 +6,8 @@
 # Weight data files
 # Can be regenerated
 *.json
+
+# Testing binaries
+*_tb
+# Testing log files
+*.vcd
