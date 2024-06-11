@@ -1,0 +1,9 @@
+# Cache
+__pycache__/
+
+# Torch downloads
+data/
+Models/
+
+# Weight files
+*.json
