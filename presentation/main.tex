@@ -13,6 +13,10 @@
 	},
 }
 
+\addbibresource{fpga.bib}
+\addbibresource{models.bib}
+\addbibresource{related.bib}
+
 
 \begin{document}
 
@@ -25,6 +29,17 @@
 
 \begin{frame}
 \frametitle{Problem Statement and Motivation}
+\begin{itemize}
+	\item FPGA accelerators are promising for embedded applications where GPUs
+	are unavailable.
+	\item Depthwise-separable convolutions are key to the efficiency of
+	MobileNet \& EfficientNet.
+	\item Existing FPGA accelerators do not implement them efficiently.
+	\item Most FPGA accelerators do not publicly release code.
+	\begin{itemize}
+		\item All rely on expensive, proprietary Altera or Xilinx boards.
+	\end{itemize}
+\end{itemize}
 \end{frame}
 
 
@@ -35,11 +50,31 @@
 
 \begin{frame}
 \frametitle{Methodology}
+\begin{itemize}
+	\item Create a small network with a similar architecture to MobileNet.
+	\begin{itemize}
+		\item Only open-source FPGA MobileNet
+		accelerator\supercite{solovyev2019mobilenet} is dependent on
+		proprietary \$700 board.
+	\end{itemize}
+	\item Use the DPU architecture proposed by
+	\citeauthor{mobilenet2019fpga}\supercite{mobilenet2019fpga}
+	to accelerate it.
+	\begin{itemize}
+		\item Compare against an un-optimized architecture for the same network.
+	\end{itemize}
+\end{itemize}
 \end{frame}
 
 
 \begin{frame}
 \frametitle{Experiments \& Results}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{References}
+\printbibliography
 \end{frame}
 
 
