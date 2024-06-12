@@ -8,32 +8,43 @@ module proc_elem #(
 	parameter KERNEL_SIZE = 3,
 	// Number of bits in each pixel
 	parameter PX_SIZE = 8,
-	localparam NUM_INPUTS = KERNEL_SIZE * KERNEL_SIZE,
-	// Product of two N-bit inputs
-	localparam ADDER_IN_SIZE = 2*PX_SIZE,
-	localparam ADDER_OUT_SIZE = ADDER_IN_SIZE + $clog2(NUM_INPUTS)
+	parameter INPUT_CHANNELS = 1,
+	// N x N kernel with C channels
+	localparam NUM_INPUTS = KERNEL_SIZE * KERNEL_SIZE * INPUT_CHANNELS,
+	localparam ADDER_OUT_SIZE = PX_SIZE + $clog2(NUM_INPUTS)
 ) (
-	input wire[KERNEL_SIZE-1:0][KERNEL_SIZE-1:0][PX_SIZE-1:0] img_in,
-	input wire[KERNEL_SIZE-1:0][KERNEL_SIZE-1:0][PX_SIZE-1:0] kernel_in,
-	output reg[ADDER_OUT_SIZE-1:0] img_out
+	input wire
+		[KERNEL_SIZE-1:0][KERNEL_SIZE-1:0]
+		[INPUT_CHANNELS-1:0][PX_SIZE-1:0] img_in,
+	input wire
+		[KERNEL_SIZE-1:0][KERNEL_SIZE-1:0]
+		[INPUT_CHANNELS-1:0][PX_SIZE-1:0] kernel,
+	output wire[PX_SIZE-1:0] img_out
 );
-	wire[KERNEL_SIZE-1:0][KERNEL_SIZE-1:0][2*PX_SIZE-1:0] adder_inputs;
+	wire
+		[KERNEL_SIZE-1:0][KERNEL_SIZE-1:0]
+		[INPUT_CHANNELS-1:0][PX_SIZE-1:0] adder_inputs;
+	wire[ADDER_OUT_SIZE-1:0] adder_output;
 	atree #(
-		.IN_WIDTH(ADDER_IN_SIZE),
+		.IN_WIDTH(PX_SIZE),
 		.LEVELS(int'($ceil($clog2(NUM_INPUTS))))
 	) adder (
 		.inputs(adder_inputs),
-		.out(img_out)
+		.out(adder_output)
 	);
+	// Divide by 2 negates upward scaling of multiplication
+	assign img_out = adder_output[ADDER_OUT_SIZE-1:ADDER_OUT_SIZE-PX_SIZE-1];
 	
-	genvar x, y;
+	genvar x, y, c;
 	generate
 		// For each kernel pixel
 		for (x = 0; x < KERNEL_SIZE; x += 1) begin
 			for (y = 0; y < KERNEL_SIZE; y += 1) begin
-				assign adder_inputs[x][y] = img_in[x][y] * kernel_in[x][y];
+				for (c = 0; c < INPUT_CHANNELS; c += 1) begin
+					// Could bit shift for larger kernels
+					assign adder_inputs[x][y][c] = img_in[x][y][c] * kernel[x][y][c];
+				end
 			end
 		end
 	endgenerate
-	
 endmodule
