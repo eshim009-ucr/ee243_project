@@ -17,7 +17,7 @@ def extract_weights(model=None, outfile="weights.json"):
 		outjson = {}
 		for key, val in model.state_dict().items():
 			print(f"Parsing {key}...")
-			outjson[key] = val.numpy().tolist()
+			outjson[key] = val.cpu().numpy().tolist()
 		json.dump(outjson, fp=fout, indent='\t')
 
 	print("Done!")
