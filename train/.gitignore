@@ -7,3 +7,4 @@ Models/
 
 # Weight files
 *.json
+fixed_weights/
