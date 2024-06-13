@@ -80,6 +80,7 @@ def float_to_fixed(floating, int_bits, frac_bits):
 		err[i] = np.abs((np.float64(np_fixed[i])/scale) - np_floating[i])
 	print(f"\tMaximum error was {np.max(err):0.3f}")
 	print(f"\tTotal error was {np.sum(err):0.2f}")
+	print(f"\tAverage error was {np.sum(err)/len(np_floating):0.2f}")
 
 	return np_fixed.reshape(shape)
 
@@ -95,10 +96,14 @@ def compile_weights(infile="weights.json", bits=8):
 	
 	print("Writing to new files...")
 	pathlib.Path("fixed_weights").mkdir(exist_ok=True)
+	total_bytes = 0
 	for layer, values in weights.items():
 		print(f"Converting {layer}...")
 		with open(f"fixed_weights/{layer}.bin", "wb") as fout:
-			fout.write(float_to_fixed(values, int_bits, frac_bits).tobytes())
+			binary_weights = float_to_fixed(values, int_bits, frac_bits).tobytes()
+			total_bytes += len(binary_weights)
+			fout.write(binary_weights)
+	print(f"{total_bytes} bytes written in total")
 	print("Done!")
 
 if __name__ == "__main__":
