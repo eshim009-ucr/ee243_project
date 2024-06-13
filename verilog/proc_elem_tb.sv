@@ -1,6 +1,6 @@
 `timescale 1ns / 1ps
 
-// Adder tree testbench
+// Processing element testbench
 module proc_elem_tb #(
 	// Width of the kernel, assumed to be square
 	parameter KERNEL_SIZE = 3,

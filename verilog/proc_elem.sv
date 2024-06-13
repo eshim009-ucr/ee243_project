@@ -27,7 +27,7 @@ module proc_elem #(
 	wire[ADDER_OUT_SIZE-1:0] adder_output;
 	atree #(
 		.IN_WIDTH(PX_SIZE),
-		.LEVELS(int'($ceil($clog2(NUM_INPUTS))))
+		.LEVELS($rtoi($ceil($clog2(NUM_INPUTS))))
 	) adder (
 		.inputs(adder_inputs),
 		.out(adder_output)
