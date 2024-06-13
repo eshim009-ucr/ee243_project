@@ -84,3 +84,5 @@ proc_elem_tb: proc_elem_tb.sv proc_elem.sv atree.sv atree_level.sv adder.v
 	iverilog -g2005-sv -o $@ $^
 conv_layer_tb: conv_layer_tb.sv conv_layer.sv proc_elem.sv atree.sv atree_level.sv adder.v
 	iverilog -g2005-sv -o $@ $^
+mtree_tb: mtree_tb.sv mtree.sv mtree_level.sv max.v
+	iverilog -g2005-sv -o $@ $^
