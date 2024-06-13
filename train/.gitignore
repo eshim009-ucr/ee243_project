@@ -8,3 +8,5 @@ Models/
 # Weight files
 *.json
 fixed_weights/
+test_data/
+train_data/
