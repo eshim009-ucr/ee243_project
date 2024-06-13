@@ -5,6 +5,7 @@ Extracts the weights from a the pretrained MobileNetv2 model from TorchVision
 and dumps them in a JSON file.
 """
 
+from sys import argv
 import json
 import torch
 
@@ -21,3 +22,9 @@ def extract_weights(model=None, outfile="weights.json"):
 		json.dump(outjson, fp=fout, indent='\t')
 
 	print("Done!")
+
+if __name__ == "__main__":
+	if len(argv) > 1:
+		extract_weights(outfile=argv[1])
+	else:
+		extract_weights()
