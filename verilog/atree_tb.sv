@@ -54,7 +54,7 @@ module atree_tb #(
 
 		test++;
 		$write("\tTest %0d.%0d: All ones...", suite, test);
-		inputs2 = -32'd1;
+		inputs2 = -32'sd1;
 		expected2 = {10'b11_1111_1100};
 		#10;
 		if (output2 === expected2) begin

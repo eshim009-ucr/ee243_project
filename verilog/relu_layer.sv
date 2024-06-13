@@ -23,7 +23,7 @@ module relu_layer #(
 	generate
 		for (x = 0; x < INPUT_SIZE; x += 1) begin
 			for (y = 0; y < INPUT_SIZE; y += 1) begin
-				for (c = 0; c < INPUT_SIZE; c += 1) begin
+				for (c = 0; c < INPUT_CHANNELS; c += 1) begin
 					always @(img_in[x][y][c]) begin
 						if (img_in[x][y][c] > 0) begin
 							img_out[x][y][c] = img_in[x][y][c];

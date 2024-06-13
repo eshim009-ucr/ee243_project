@@ -1,7 +1,6 @@
 `timescale 1ns / 1ps
 
-// Convolutional Layer
-// More output channels can be accomplished with more instances of this module
+// Actual network
 module minimobilenet #(
 	// Input size, assumed to be square
 	parameter INPUT_SIZE = 32,
