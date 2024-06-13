@@ -34,11 +34,10 @@ module conv_layer #(
 					[KERNEL_SIZE-1:0][KERNEL_SIZE-1:0]
 					[INPUT_CHANNELS-1:0]
 					[PX_SIZE-1:0] region;
-				
 				for (k = 0; k < KERNEL_SIZE; k += 1) begin
 					assign region[k] = img_in[x+k][y+KERNEL_SIZE-1:y];
 				end
-				
+
 				proc_elem #(
 					.KERNEL_SIZE(KERNEL_SIZE),
 					.PX_SIZE(PX_SIZE),

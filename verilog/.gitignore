@@ -6,7 +6,7 @@ slpp_all/
 
 # Weight data files
 # Can be regenerated
-*.json
+fixed_weights/*
 
 # Testing binaries
 *_tb
