@@ -2,6 +2,7 @@
 *.blif
 *.asc
 *.bin
+slpp_all/
 
 # Weight data files
 # Can be regenerated
