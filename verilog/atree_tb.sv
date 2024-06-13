@@ -114,10 +114,10 @@ module atree_tb #(
 			24'd26 + 24'd89 + 24'd27 + 24'd9
 		);
 		#10;
-		if (output2 === expected2) begin
+		if (output4 === expected4) begin
 			$write("Passed!\n");
 		end else begin
-			$write("Failed! (Expected 0x%0h, Got 0x%0h)\n", expected2, output2);
+			$write("Failed! (Expected 0x%0h, Got 0x%0h)\n", expected4, output4);
 		end
 	end
 endmodule

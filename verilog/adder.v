@@ -7,7 +7,7 @@ module adder #(
 )(
 	// First addend
 	input wire[IN_WIDTH-1:0] a,
-	// Second adend
+	// Second addend
 	input wire[IN_WIDTH-1:0] b,
 	// Sum, including carryout
 	output reg[IN_WIDTH:0] sum
