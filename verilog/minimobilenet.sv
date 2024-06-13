@@ -28,6 +28,15 @@ module minimobilenet #(
 		[CONV_OUT_SIZE-1:0][CONV_OUT_SIZE-1:0]
 		[PX_SIZE-1:0] conv_out;
 
+	reg[CONV_OUT_CHANNELS-1:0]
+		[CONV_KERNEL_SIZE-1:0][CONV_KERNEL_SIZE-1:0]
+		[INPUT_CHANNELS-1:0]
+		[PX_SIZE-1:0] conv_kernels;
+	reg[CONV_OUT_CHANNELS-1:0]
+		[PX_SIZE-1:0] conv_biases;
+	initial $readmemb("fixed_weights/conv1.weight.coe", conv_kernels);
+	initial $readmemb("fixed_weights/conv1.bias.coe", conv_biases);
+
 	genvar i;
 	generate
 		for (i = 0; i < CONV_OUT_CHANNELS; i += 1) begin
@@ -43,7 +52,8 @@ module minimobilenet #(
 				.PX_SIZE(PX_SIZE)
 			) layer (
 				.img_in(img_in),
-				.kernel(kernels[i]),
+				.kernel(conv_kernels[i]),
+				.bias(conv_biases[i]),
 				.img_out(raw_conv_out)
 			);
 			relu_layer #(
@@ -76,6 +86,15 @@ module minimobilenet #(
 		[DWCV_OUT_SIZE-1:0][DWCV_OUT_SIZE-1:0]
 		[PX_SIZE-1:0] dwcv_out;
 
+	reg[CONV_OUT_CHANNELS-1:0]
+		[CONV_KERNEL_SIZE-1:0][CONV_KERNEL_SIZE-1:0]
+		[INPUT_CHANNELS-1:0]
+		[PX_SIZE-1:0] dwcv_kernels;
+	reg[CONV_OUT_CHANNELS-1:0]
+		[PX_SIZE-1:0] dwcv_biases;
+	initial $readmemb("fixed_weights/conv2.depthwise.weight.coe", dwcv_kernels);
+	initial $readmemb("fixed_weights/conv2.depthwise.bias.coe", dwcv_biases);
+
 	genvar j;
 	generate
 		for (j = 0; j < DWCV_OUT_CHANNELS; j += 1) begin
@@ -91,7 +110,8 @@ module minimobilenet #(
 				.PX_SIZE(PX_SIZE)
 			) layer (
 				.img_in(conv_out),
-				.kernel(kernels[i]),
+				.kernel(dwcv_kernels[i]),
+				.bias(dwcv_biases[i]),
 				.img_out(raw_dwcv_out)
 			);
 			relu_layer #(
@@ -139,7 +159,7 @@ module minimobilenet #(
 	localparam FC2_OUT_SIZE = FC1_OUT_SIZE;
 	wire[FC2_OUT_CHANNELS-1:0]
 		[FC2_OUT_SIZE-1:0][FC2_OUT_SIZE-1:0]
-		[PX_SIZE-1:0] fc1_out;
+		[PX_SIZE-1:0] fc2_out;
 
 	fc_layer #(
 		.INPUT_SIZE(FC2_INPUT_SIZE),
@@ -147,8 +167,8 @@ module minimobilenet #(
 		.PX_SIZE(PX_SIZE),
 		.WEIGHT_FILE("fixed_weights/fc2.weights.coe"),
 		.BIAS_FILE("fixed_weights/fc2.bias.coe")
-	) fc1 (
-		.img_in(dwcv_out),
-		.img_out(fc1_out)
+	) fc2 (
+		.img_in(fc1_out),
+		.img_out(fc2_out)
 	);
 endmodule

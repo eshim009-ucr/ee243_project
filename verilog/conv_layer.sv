@@ -21,6 +21,7 @@ module conv_layer #(
 		[KERNEL_SIZE-1:0][KERNEL_SIZE-1:0]
 		[INPUT_CHANNELS-1:0]
 		[PX_SIZE-1:0] kernel,
+	input wire[PX_SIZE-1:0] bias,
 	output reg
 		[OUTPUT_SIZE-1:0][OUTPUT_SIZE-1:0]
 		[PX_SIZE-1:0] img_out
@@ -45,6 +46,7 @@ module conv_layer #(
 				) pe (
 					.img_in(region),
 					.kernel(kernel),
+					.bias(bias),
 					.img_out(img_out[x][y])
 				);
 			end

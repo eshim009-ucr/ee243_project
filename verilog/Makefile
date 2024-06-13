@@ -86,3 +86,5 @@ conv_layer_tb: conv_layer_tb.sv conv_layer.sv proc_elem.sv atree.sv atree_level.
 	iverilog -g2005-sv -o $@ $^
 mtree_tb: mtree_tb.sv mtree.sv mtree_level.sv max.v
 	iverilog -g2005-sv -o $@ $^
+minimobilenet_tb: minimobilenet_tb.sv minimobilenet.sv conv_layer.sv proc_elem.sv atree.sv atree_level.sv adder.v relu_layer.sv pool_layer.sv  mtree.sv mtree_level.sv max.v fc_layer.sv perceptron.sv
+	iverilog -g2005-sv -o $@ $^

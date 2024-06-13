@@ -30,7 +30,7 @@ module fc_layer #(
 		[OUTPUT_CHANNELS-1:0]
 		[PX_SIZE-1:0] img_out
 );
-	genvar i;
+	genvar x, y, c;
 
 	initial $readmemb(WEIGHT_FILE, weights);
 	initial $readmemb(BIAS_FILE, biases);
