@@ -5,6 +5,7 @@ Converts floating point weights from a JSON file into fixed point weights
 """
 
 from sys import argv
+from math import ceil
 import os
 import json
 import numpy as np
@@ -50,7 +51,7 @@ def find_split(weights, bits):
 
 
 def np_int_type(int_bits, frac_bits):
-	bits = int(np.ceil((int_bits + frac_bits) / 8)) * 8
+	bits = ceil((int_bits + frac_bits) / 8) * 8
 	if bits == 8:
 		return np.int8
 	elif bits == 16:
@@ -85,6 +86,20 @@ def float_to_fixed(floating, int_bits, frac_bits):
 	return np_fixed.reshape(shape)
 
 
+def bytes_to_coe(byte_arr):
+	lines = ""
+	for i in range(ceil(len(byte_arr)/4)):
+		b = None
+		if (i+1)*4 <= len(byte_arr):
+			b = byte_arr[i*4 : (i+1)*4]
+		else:
+			b = bytearray(byte_arr[i*4 : len(byte_arr)])
+			while len(b) < 4:
+				b.append(0)
+		n = int.from_bytes(b)
+		lines += f"{n:0{32}b}\n"
+	return lines
+
 def compile_weights(infile="weights.json", bits=8):
 	print(f"Loading weight file {infile}...")
 	weights = None
@@ -99,10 +114,10 @@ def compile_weights(infile="weights.json", bits=8):
 	total_bytes = 0
 	for layer, values in weights.items():
 		print(f"Converting {layer}...")
-		with open(f"fixed_weights/{layer}.bin", "wb") as fout:
+		with open(f"fixed_weights/{layer}.coe", "w") as fout:
 			binary_weights = float_to_fixed(values, int_bits, frac_bits).tobytes()
 			total_bytes += len(binary_weights)
-			fout.write(binary_weights)
+			fout.write(bytes_to_coe(binary_weights))
 	print(f"{total_bytes} bytes written in total")
 	print("Done!")
 
