@@ -5,7 +5,7 @@ module minimobilenet #(
 	// Input size, assumed to be square
 	parameter INPUT_SIZE = 32,
 	// Input image channels/features
-	parameter INPUT_CHANNELS = 3,
+	parameter INPUT_CHANNELS = 1,
 	// Bits per pixel
 	parameter PX_SIZE = 8,
 	// Number of classes
@@ -19,7 +19,7 @@ module minimobilenet #(
 		[OUTPUT_CHANNELS-1:0]
 		[PX_SIZE-1:0] img_out
 );
-	localparam CONV_OUT_CHANNELS = 6;
+	localparam CONV_OUT_CHANNELS = 3;
 	localparam CONV_KERNEL_SIZE = 3;
 	localparam CONV_RAW_SIZE = INPUT_SIZE - (CONV_KERNEL_SIZE-1);
 	localparam CONV_POOL_SIZE = CONV_RAW_SIZE / 2;
@@ -77,7 +77,7 @@ module minimobilenet #(
 
 	localparam DWCV_INPUT_SIZE = CONV_OUT_SIZE;
 	localparam DWCV_INPUT_CHANNELS = CONV_OUT_CHANNELS;
-	localparam DWCV_OUT_CHANNELS = 16;
+	localparam DWCV_OUT_CHANNELS = 8;
 	localparam DWCV_KERNEL_SIZE = 3;
 	localparam DWCV_RAW_SIZE = DWCV_INPUT_SIZE - (DWCV_KERNEL_SIZE-1);
 	localparam DWCV_POOL_SIZE = DWCV_RAW_SIZE / 2;
@@ -141,42 +141,22 @@ module minimobilenet #(
 	endgenerate
 
 
-	localparam FC1_INPUT_SIZE = DWCV_OUT_SIZE;
-	localparam FC1_INPUT_CHANNELS = DWCV_OUT_CHANNELS * 7*7;
-	localparam FC1_OUT_CHANNELS = 84;
-	localparam FC1_OUT_SIZE = DWCV_OUT_SIZE;
-	wire[FC1_OUT_CHANNELS-1:0]
-		[FC1_OUT_SIZE-1:0][FC1_OUT_SIZE-1:0]
-		[PX_SIZE-1:0] fc1_out;
+	localparam FC_INPUT_SIZE = DWCV_OUT_SIZE;
+	localparam FC_INPUT_CHANNELS = DWCV_OUT_CHANNELS * 6*6;
+	localparam FC_OUT_CHANNELS = 10;
+	localparam FC_OUT_SIZE = DWCV_OUT_SIZE;
+	wire[FC_OUT_CHANNELS-1:0]
+		[FC_OUT_SIZE-1:0][FC_OUT_SIZE-1:0]
+		[PX_SIZE-1:0] fc_out;
 
 	fc_layer #(
-		.INPUT_SIZE(FC1_INPUT_SIZE),
-		.INPUT_CHANNELS(FC1_INPUT_CHANNELS),
+		.INPUT_SIZE(FC_INPUT_SIZE),
+		.INPUT_CHANNELS(FC_INPUT_CHANNELS),
 		.PX_SIZE(PX_SIZE),
-		.WEIGHT_FILE("fixed_weights/fc1.weights.coe"),
-		.BIAS_FILE("fixed_weights/fc1.bias.coe")
-	) fc1 (
+		.WEIGHT_FILE("fixed_weights/fc.weights.coe"),
+		.BIAS_FILE("fixed_weights/fc.bias.coe")
+	) fc (
 		.img_in(dwcv_out),
-		.img_out(fc1_out)
-	);
-
-
-	localparam FC2_INPUT_SIZE = FC1_OUT_SIZE;
-	localparam FC2_INPUT_CHANNELS = FC1_OUT_CHANNELS;
-	localparam FC2_OUT_CHANNELS = OUTPUT_CHANNELS;
-	localparam FC2_OUT_SIZE = FC1_OUT_SIZE;
-	wire[FC2_OUT_CHANNELS-1:0]
-		[FC2_OUT_SIZE-1:0][FC2_OUT_SIZE-1:0]
-		[PX_SIZE-1:0] fc2_out;
-
-	fc_layer #(
-		.INPUT_SIZE(FC2_INPUT_SIZE),
-		.INPUT_CHANNELS(FC2_INPUT_CHANNELS),
-		.PX_SIZE(PX_SIZE),
-		.WEIGHT_FILE("fixed_weights/fc2.weights.coe"),
-		.BIAS_FILE("fixed_weights/fc2.bias.coe")
-	) fc2 (
-		.img_in(fc1_out),
-		.img_out(fc2_out)
+		.img_out(img_out)
 	);
 endmodule
