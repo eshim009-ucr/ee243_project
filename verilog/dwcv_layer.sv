@@ -36,7 +36,7 @@ module dwcv_layer #(
 		[OUTPUT_SIZE-1:0][OUTPUT_SIZE-1:0]
 		[PX_SIZE-1:0] img_out
 );
-	wire[OUT_CHANNELS-1:0]
+	wire[OUTPUT_CHANNELS-1:0]
 		[OUTPUT_SIZE-1:0][OUTPUT_SIZE-1:0]
 		[PX_SIZE-1:0] dw_out;
 

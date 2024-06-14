@@ -3,7 +3,7 @@
 // Actual network
 module minimobilenet #(
 	// Input size, assumed to be square
-	parameter INPUT_SIZE = 32,
+	parameter INPUT_SIZE = 16,
 	// Input image channels/features
 	parameter INPUT_CHANNELS = 1,
 	// Bits per pixel
@@ -92,7 +92,7 @@ module minimobilenet #(
 	reg[DWCV_INPUT_CHANNELS-1:0]
 		[PX_SIZE-1:0] depth_biases;
 	reg[DWCV_OUT_CHANNELS-1:0]
-		[DWCV_IN_CHANNELS-1:0]
+		[DWCV_INPUT_CHANNELS-1:0]
 		[PX_SIZE-1:0] point_kernels;
 	reg[CONV_OUT_CHANNELS-1:0]
 		[PX_SIZE-1:0] point_biases;
@@ -142,7 +142,7 @@ module minimobilenet #(
 
 
 	localparam FC_INPUT_SIZE = DWCV_OUT_SIZE;
-	localparam FC_INPUT_CHANNELS = DWCV_OUT_CHANNELS * 6*6;
+	localparam FC_INPUT_CHANNELS = DWCV_OUT_CHANNELS * 2*2;
 	localparam FC_OUT_CHANNELS = 10;
 	localparam FC_OUT_SIZE = DWCV_OUT_SIZE;
 	wire[FC_OUT_CHANNELS-1:0]
