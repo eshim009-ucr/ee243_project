@@ -86,34 +86,42 @@ module minimobilenet #(
 		[DWCV_OUT_SIZE-1:0][DWCV_OUT_SIZE-1:0]
 		[PX_SIZE-1:0] dwcv_out;
 
+	reg[DWCV_INPUT_CHANNELS-1:0]
+		[DWCV_KERNEL_SIZE-1:0][DWCV_KERNEL_SIZE-1:0]
+		[PX_SIZE-1:0] depth_kernels;
+	reg[DWCV_INPUT_CHANNELS-1:0]
+		[PX_SIZE-1:0] depth_biases;
+	reg[DWCV_OUT_CHANNELS-1:0]
+		[DWCV_IN_CHANNELS-1:0]
+		[PX_SIZE-1:0] point_kernels;
 	reg[CONV_OUT_CHANNELS-1:0]
-		[CONV_KERNEL_SIZE-1:0][CONV_KERNEL_SIZE-1:0]
-		[INPUT_CHANNELS-1:0]
-		[PX_SIZE-1:0] dwcv_kernels;
-	reg[CONV_OUT_CHANNELS-1:0]
-		[PX_SIZE-1:0] dwcv_biases;
-	initial $readmemb("fixed_weights/conv2.depthwise.weight.coe", dwcv_kernels);
-	initial $readmemb("fixed_weights/conv2.depthwise.bias.coe", dwcv_biases);
+		[PX_SIZE-1:0] point_biases;
+	initial $readmemb("fixed_weights/conv2.depthwise.weight.coe", depth_kernels);
+	initial $readmemb("fixed_weights/conv2.depthwise.bias.coe", depth_biases);
+	initial $readmemb("fixed_weights/conv2.pointwise.weight.coe", point_kernels);
+	initial $readmemb("fixed_weights/conv2.pointwise.bias.coe", point_biases);
 
+	dwcv_layer #(
+		.INPUT_SIZE(DWCV_INPUT_SIZE),
+		.INPUT_CHANNELS(DWCV_INPUT_CHANNELS),
+		.KERNEL_SIZE(3),
+		.PX_SIZE(PX_SIZE)
+	) layer (
+		.img_in(conv_out),
+		.depth_kernels(depth_kernels),
+		.depth_biases(depth_biases),
+		.point_kernels(point_kernels),
+		.point_biases(point_biases),
+		.img_out(raw_dwcv_out)
+	);
 	genvar j;
 	generate
-		for (j = 0; j < DWCV_OUT_CHANNELS; j += 1) begin
-			wire[DWCV_OUT_SIZE-1:0][DWCV_OUT_SIZE-1:0]
-				[CONV_OUT_CHANNELS-1:0]
+		for (i = 0; i < DWCV_OUT_CHANNELS; i += 1) begin
+			wire[DWCV_RAW_SIZE-1:0][DWCV_RAW_SIZE-1:0]
+				[DWCV_INPUT_CHANNELS-1:0]
 				[PX_SIZE-1:0] raw_dwcv_out;
 			wire[DWCV_RAW_SIZE-1:0][DWCV_RAW_SIZE-1:0]
 				[PX_SIZE-1:0] relu_dwcv_out;
-			conv_layer #(
-				.INPUT_SIZE(DWCV_INPUT_SIZE),
-				.INPUT_CHANNELS(DWCV_INPUT_CHANNELS),
-				.KERNEL_SIZE(3),
-				.PX_SIZE(PX_SIZE)
-			) layer (
-				.img_in(conv_out),
-				.kernel(dwcv_kernels[i]),
-				.bias(dwcv_biases[i]),
-				.img_out(raw_dwcv_out)
-			);
 			relu_layer #(
 				.INPUT_SIZE(DWCV_RAW_SIZE),
 				.PX_SIZE(PX_SIZE)
@@ -127,7 +135,7 @@ module minimobilenet #(
 				.PX_SIZE(PX_SIZE)
 			) pool (
 				.img_in(relu_dwcv_out),
-				.img_out(conv_out[i])
+				.img_out(dwcv_out[j])
 			);
 		end
 	endgenerate
