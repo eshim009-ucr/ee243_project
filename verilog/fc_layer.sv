@@ -10,30 +10,25 @@ module fc_layer #(
 	parameter OUTPUT_CHANNELS = 3,
 	// Bits per pixel
 	parameter PX_SIZE = 8,
-	parameter WEIGHT_FILE = "weights.coe",
-	parameter BIAS_FILE = "biases.coe",
 	localparam FLAT_INPUT_SIZE = INPUT_SIZE*INPUT_SIZE*INPUT_CHANNELS
 ) (
 	input wire
 		[INPUT_SIZE-1:0][INPUT_SIZE-1:0]
 		[INPUT_CHANNELS-1:0]
 		[PX_SIZE-1:0] img_in,
-	input reg
+	input wire
 		[OUTPUT_CHANNELS-1:0]
 		[INPUT_SIZE-1:0][INPUT_SIZE-1:0]
 		[INPUT_CHANNELS-1:0]
 		[PX_SIZE-1:0] weights,
-	input reg
+	input wire
 		[OUTPUT_CHANNELS-1:0]
 		[PX_SIZE-1:0] biases,
-	output reg
+	output wire
 		[OUTPUT_CHANNELS-1:0]
 		[PX_SIZE-1:0] img_out
 );
 	genvar x, y, c;
-
-	initial $readmemb(WEIGHT_FILE, weights);
-	initial $readmemb(BIAS_FILE, biases);
 
 	generate
 		for (x = 0; x < INPUT_SIZE; x += 1) begin
