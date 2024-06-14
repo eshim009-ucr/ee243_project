@@ -102,6 +102,34 @@
 
 \begin{frame}
 \frametitle{Experiments \& Results}
+\begin{itemize}
+	\item Model size (in terms of weights) was not the bottleneck.
+	\item Limited floorplan space and CPU time to synthesize model was primary
+	bottleneck.
+	\begin{itemize}
+		\item A model with $\SI{6}{\kilo\byte}$ of weights took over 5 hours to
+		synthesize.
+		\item A model with $\SI{400}{\byte}$ of weights took 5 \emph{seconds}
+		to synthesize.
+	\end{itemize}
+	\item Scaling down initial image has exponential floorplan benefits.
+	\item Floorplan complexity could be reduced by de-parallelizing some
+	computations.
+\end{itemize}
+\begin{columns}
+\column{0.5\linewidth}
+\begin{figure}
+	\centering
+	\input{overparallelize}
+	\caption*{Overparallelized Convolutional Adder Tree: 3 Levels, 21 Adders}
+\end{figure}
+\column{0.5\linewidth}
+\begin{figure}
+	\centering
+	\input{deparallelize}
+	\caption*{Deparallelized Convolutional Adder Tree: 2 Levels, 5 Adders}
+\end{figure}
+\end{columns}
 \end{frame}
 
 
