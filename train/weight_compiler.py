@@ -66,7 +66,7 @@ def np_int_type(int_bits, frac_bits):
 		print(f"Needs too many ({bits}) bits")
 		exit(1)
 
-def float_to_fixed(floating, int_bits, frac_bits):
+def float_to_fixed(floating, int_bits, frac_bits, verbose=False):
 	np_floating = np.array(floating)
 	shape = np_floating.shape
 	dtype = np_int_type(int_bits, frac_bits)
@@ -79,9 +79,10 @@ def float_to_fixed(floating, int_bits, frac_bits):
 	for i in range(len(np_floating)):
 		np_fixed[i] = round(np_floating[i] * scale)
 		err[i] = np.abs((np.float64(np_fixed[i])/scale) - np_floating[i])
-	print(f"\tMaximum error was {np.max(err):0.3f}")
-	print(f"\tTotal error was {np.sum(err):0.2f}")
-	print(f"\tAverage error was {np.sum(err)/len(np_floating):0.2f}")
+	if verbose:
+		print(f"\tMaximum error was {np.max(err):0.3f}")
+		print(f"\tTotal error was {np.sum(err):0.2f}")
+		print(f"\tAverage error was {np.sum(err)/len(np_floating):0.2f}")
 
 	return np_fixed.reshape(shape)
 
@@ -89,13 +90,7 @@ def float_to_fixed(floating, int_bits, frac_bits):
 def bytes_to_coe(byte_arr):
 	lines = ""
 	for i in range(ceil(len(byte_arr)/4)):
-		b = None
-		if (i+1)*4 <= len(byte_arr):
-			b = byte_arr[i*4 : (i+1)*4]
-		else:
-			b = bytearray(byte_arr[i*4 : len(byte_arr)])
-			while len(b) < 4:
-				b.append(0)
+		b = byte_arr[i*4 : min((i+1)*4, len(byte_arr))]
 		n = int.from_bytes(b)
 		lines += f"{n:0{32}b}\n"
 	return lines
@@ -116,6 +111,7 @@ def compile_weights(infile="weights.json", bits=8):
 		print(f"Converting {layer}...")
 		with open(f"fixed_weights/{layer}.coe", "w") as fout:
 			binary_weights = float_to_fixed(values, int_bits, frac_bits).tobytes()
+			print(f"\t{len(binary_weights)} bytes")
 			total_bytes += len(binary_weights)
 			fout.write(bytes_to_coe(binary_weights))
 	print(f"{total_bytes} bytes written in total")
