@@ -46,44 +46,56 @@
 
 \begin{frame}
 \frametitle{Framework Overview Figure}
-	\begin{figure}
-		\centering
-		\input{network}
-	\end{figure}
-	\begin{columns}
-		\column[t]{0.5\linewidth}
+\begin{figure}
+	\centering
+	\input{network}
+\end{figure}
+\begin{columns}
+	\column[t]{0.5\linewidth}
+	\begin{itemize}
+		\item Similar to early MobileNet stage.
+		\item Trained with PyTorch on Colab.
 		\begin{itemize}
-			\item Similar to early MobileNet stage.
-			\item Trained with PyTorch on Colab.
-			\begin{itemize}
-				\item $\SI{81}{\percent}$ accuracy on CIFAR10.
-			\end{itemize}
+			\item $\SI{81}{\percent}$ accuracy on CIFAR10.
 		\end{itemize}
-		\column[t]{0.5\linewidth}
-		\begin{itemize}
-			\item Each convolution layer is followed by a ReLu and MaxPool.
-			\item Converted to 8-bit fixed point for Verilog.
-		\end{itemize}
-	\end{columns}
+	\end{itemize}
+	\column[t]{0.5\linewidth}
+	\begin{itemize}
+		\item Each convolution layer is followed by a ReLu and MaxPool.
+		\item Converted to 8-bit fixed point for Verilog.
+	\end{itemize}
+\end{columns}
 \end{frame}
 
 
 \begin{frame}
 \frametitle{Methodology}
-\begin{itemize}
-	\item Create a small network with a similar architecture to MobileNet.
+\begin{columns}
+	\column{0.8\linewidth}
 	\begin{itemize}
-		\item Only open-source FPGA MobileNet
-		accelerator\supercite{solovyev2019mobilenet} is dependent on
-		proprietary \$700 board.
+		\item Create a minimal model with a similar structure to MobileNet.
+		\begin{itemize}
+			\item Only open-source FPGA MobileNet
+			accelerator\supercite{solovyev2019mobilenet} is dependent on
+			proprietary \$700 board.
+			\item Remove as layers and channels as possible while maintaining high
+			accuracy on a popular dataset.
+		\end{itemize}
+		\item Use the DPU architecture proposed by
+		\citeauthor{mobilenet2019fpga}\supercite{mobilenet2019fpga}
+		to accelerate it.
+		\begin{itemize}
+			\item Compare against an un-optimized architecture for the same network.
+			\item Key improvement is separate depthwise-convolution engine.
+		\end{itemize}
+		\item Test synthesized model against images using Icarus Verilog.
 	\end{itemize}
-	\item Use the DPU architecture proposed by
-	\citeauthor{mobilenet2019fpga}\supercite{mobilenet2019fpga}
-	to accelerate it.
-	\begin{itemize}
-		\item Compare against an un-optimized architecture for the same network.
-	\end{itemize}
-\end{itemize}
+	\column{0.2\linewidth}
+	\begin{figure}
+		\centering
+		\input{network-pytorch}
+	\end{figure}
+\end{columns}
 \end{frame}
 
 
