@@ -46,41 +46,23 @@
 
 \begin{frame}
 \frametitle{Framework Overview Figure}
+	\begin{figure}
+		\centering
+		\input{network}
+	\end{figure}
 	\begin{columns}
-		\column{0.5\linewidth}
-		\begin{figure}
-			\centering
-			\begin{tikzpicture}[
-				scale=0.6, transform shape,
-				endpoint/.style = {
-					circle, draw
-				},
-				layer/.style = {
-					rectangle, draw,
-					align=center,
-					text width=0.8in
-				}
-			]
-				\node[endpoint] (in) {Input};
-				\node[layer, below=of in] (conv1) {Convolution};
-				\node[layer, below=of conv1] (conv2)
-					{Depthwise-Separable Convolution};
-				\node[layer, right=of conv1] (fc1) {Linear 1};
-				\node[layer, below=of fc1] (fc2) {Linear 2};
-				\node[endpoint, below=of fc2] (out) {Output};
-				\draw[->] (in) -- (conv1);
-				\draw[->] (conv1) -- (conv2);
-				\draw[->] (conv2) -- (fc1);
-				\draw[->] (fc1) -- (fc2);
-				\draw[->] (fc2) -- (out);
-			\end{tikzpicture}
-		\end{figure}
+		\column[t]{0.5\linewidth}
 		\begin{itemize}
 			\item Similar to early MobileNet stage.
 			\item Trained with PyTorch on Colab.
 			\begin{itemize}
-				\item $\SI{90}{\percent}$ accuracy on MNIST.
+				\item $\SI{81}{\percent}$ accuracy on CIFAR10.
 			\end{itemize}
+		\end{itemize}
+		\column[t]{0.5\linewidth}
+		\begin{itemize}
+			\item Each convolution layer is followed by a ReLu and MaxPool.
+			\item Converted to 8-bit fixed point for Verilog.
 		\end{itemize}
 	\end{columns}
 \end{frame}

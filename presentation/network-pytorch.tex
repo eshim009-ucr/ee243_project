@@ -1,0 +1,30 @@
+\begin{figure}
+	\centering
+	\begin{tikzpicture}[
+		scale=0.6, transform shape,
+		endpoint/.style = {
+			circle, draw
+		},
+		layer/.style = {
+			rectangle, draw,
+			align=center,
+			text width=0.8in
+		}
+	]
+		\node[endpoint] (in) {Input};
+		\node[layer, below=of in] (conv1) {Convolution};
+		\node[layer, below=of conv1] (conv2)
+			{Depthwise-Separable Convolution};
+		\node[layer, right=1.5cm of in] (fc1) {Linear 1};
+		\node[layer, below=of fc1] (fc2) {Linear 2};
+		\node[endpoint, below=of fc2] (out) {Output};
+		\draw[->] (in) -- (conv1);
+		\draw[->] (conv1) -- (conv2);
+		\draw[->] (conv2) --
+			($ (conv2) !0.5! (conv2 -| fc1)$) coordinate(low)
+			-- (fc1 -| low) -- (fc1);
+		\draw[->] (fc1) -- (fc2);
+		\draw[->] (fc2) -- (out);
+	\end{tikzpicture}
+	\caption*{Simplified PyTorch Model}
+\end{figure}
