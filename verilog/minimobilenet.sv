@@ -39,10 +39,9 @@ module minimobilenet #(
 		[CONV_KERNEL_SIZE-1:0][CONV_KERNEL_SIZE-1:0]
 		[INPUT_CHANNELS-1:0]
 		[PX_SIZE-1:0] conv_kernels;
+
 	reg[7:0] conv_biases_mem[
 		CONV_OUT_CHANNELS *
-		CONV_KERNEL_SIZE * CONV_KERNEL_SIZE *
-		INPUT_CHANNELS *
 		PX_SIZE / 8
 		-1:0
 	];
@@ -50,8 +49,16 @@ module minimobilenet #(
 		[PX_SIZE-1:0] conv_biases;
 	initial $readmemh("fixed_weights/conv1.weight.coe", conv_kernels_mem);
 	initial $readmemh("fixed_weights/conv1.bias.coe", conv_biases_mem);
-	assign conv_kernels = conv_kernels_mem;
-	assign conv_biases = conv_biases_mem;
+	for (genvar i = 0; i < CONV_OUT_CHANNELS; i += 1) begin
+		assign conv_biases[i] = conv_biases_mem[i];
+		for (genvar j = 0; j < CONV_KERNEL_SIZE; j += 1) begin
+			for (genvar k = 0; k < CONV_KERNEL_SIZE; k += 1) begin
+				for (genvar l = 0; l < INPUT_CHANNELS; l += 1) begin
+					assign conv_kernels[i][j][k][l] = conv_kernels_mem[i*j*k*l];
+				end
+			end
+		end
+	end
 
 	genvar i;
 	generate
