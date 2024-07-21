@@ -19,76 +19,25 @@ module minimobilenet #(
 		[OUTPUT_CHANNELS-1:0]
 		[PX_SIZE-1:0] img_out
 );
-	localparam CONV_OUT_CHANNELS = 3;
-	localparam CONV_KERNEL_SIZE = 3;
-	localparam CONV_RAW_SIZE = INPUT_SIZE - (CONV_KERNEL_SIZE-1);
-	localparam CONV_POOL_SIZE = CONV_RAW_SIZE / 2;
-	localparam CONV_OUT_SIZE = CONV_POOL_SIZE;
-	wire[CONV_OUT_CHANNELS-1:0]
+	localparam CONV_OUT_SIZE = (INPUT_SIZE - (3-1)) / 2;
+	output wire
 		[CONV_OUT_SIZE-1:0][CONV_OUT_SIZE-1:0]
+		[3-1:0]
 		[PX_SIZE-1:0] conv_out;
-
-	reg[7:0] conv_kernels_mem[
-		CONV_OUT_CHANNELS *
-		CONV_KERNEL_SIZE * CONV_KERNEL_SIZE *
-		INPUT_CHANNELS *
-		PX_SIZE / 8
-		-1:0
-	];
-	wire[CONV_OUT_CHANNELS-1:0]
-		[CONV_KERNEL_SIZE-1:0][CONV_KERNEL_SIZE-1:0]
-		[INPUT_CHANNELS-1:0]
-		[PX_SIZE-1:0] conv_kernels;
-	reg[7:0] conv_biases_mem[
-		CONV_OUT_CHANNELS *
-		CONV_KERNEL_SIZE * CONV_KERNEL_SIZE *
-		INPUT_CHANNELS *
-		PX_SIZE / 8
-		-1:0
-	];
-	wire[CONV_OUT_CHANNELS-1:0]
-		[PX_SIZE-1:0] conv_biases;
-	initial $readmemh("fixed_weights/conv1.weight.coe", conv_kernels_mem);
-	initial $readmemh("fixed_weights/conv1.bias.coe", conv_biases_mem);
-	assign conv_kernels = conv_kernels_mem;
-	assign conv_biases = conv_biases_mem;
-
-	genvar i;
-	generate
-		for (i = 0; i < CONV_OUT_CHANNELS; i += 1) begin
-			wire[CONV_RAW_SIZE-1:0][CONV_RAW_SIZE-1:0]
-				[INPUT_CHANNELS-1:0]
-				[PX_SIZE-1:0] raw_conv_out;
-			wire[CONV_RAW_SIZE-1:0][CONV_RAW_SIZE-1:0]
-				[PX_SIZE-1:0] relu_conv_out;
-			conv_layer #(
-				.INPUT_SIZE(INPUT_SIZE),
-				.INPUT_CHANNELS(INPUT_CHANNELS),
-				.KERNEL_SIZE(3),
-				.PX_SIZE(PX_SIZE)
-			) layer (
-				.img_in(img_in),
-				.kernel(conv_kernels[i]),
-				.bias(conv_biases[i]),
-				.img_out(raw_conv_out)
-			);
-			relu_layer #(
-				.INPUT_SIZE(CONV_RAW_SIZE),
-				.PX_SIZE(PX_SIZE)
-			) relu (
-				.img_in(raw_conv_out),
-				.img_out(relu_conv_out)
-			);
-			pool_layer #(
-				.INPUT_SIZE(CONV_RAW_SIZE),
-				.KERNEL_SIZE(2),
-				.PX_SIZE(PX_SIZE)
-			) pool (
-				.img_in(relu_conv_out),
-				.img_out(conv_out[i])
-			);
-		end
-	endgenerate
+	full_conv_layer # (
+		.OUTPUT_CHANNELS(3),
+		.INPUT_SIZE(INPUT_SIZE),
+		.INPUT_CHANNELS(INPUT_CHANNELS),
+		.KERNEL_SIZE(3)
+		.PX_SIZE(PX_SIZE),
+		.POOL_KERNEL_SIZE(2),
+		.KERNEL_MEM_FILE("fixed_weights/conv1.weight.coe"),
+		.BIAS_MEM_FILE("fixed_weights/conv1.weight.coe"),
+	) conv (
+	input wire
+		.img_in(img_in),
+		.img_out(conv_out)
+	);
 
 
 	localparam DWCV_INPUT_SIZE = CONV_OUT_SIZE;
