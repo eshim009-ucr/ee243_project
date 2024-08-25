@@ -7,11 +7,13 @@ module dwcv_layer #(
 	// Input image channels/features
 	parameter INPUT_CHANNELS = 3,
 	// Input image channels/features
-	parameter OUTPUT_CHANNELS = 3,
+	parameter OUTPUT_CHANNELS = 8,
 	// Kernel size, assumed to be square
 	parameter KERNEL_SIZE = 3,
 	// Bits per pixel
 	parameter PX_SIZE = 8,
+    // Kernel size used for pooling
+    parameter POOL_KERNEL_SIZE = 2,
     // Coefficient file holding hex kernel values
     parameter DEPTH_KERNEL_MEM_FILE = "fixed_weights/conv.weight.coe",
     // Coefficient file holding hex bias values
@@ -22,7 +24,8 @@ module dwcv_layer #(
     parameter POINT_BIAS_MEM_FILE = "fixed_weights/conv.weight.coe",
     // Size of the raw output from the convolutional layer
 	localparam RAW_SIZE = (INPUT_SIZE - (KERNEL_SIZE-1)),
-	localparam OUTPUT_SIZE = (INPUT_SIZE - (KERNEL_SIZE-1))
+	localparam POOL_SIZE = RAW_SIZE / POOL_KERNEL_SIZE,
+	localparam OUTPUT_SIZE = POOL_SIZE
 ) (
 	input wire
 		[INPUT_SIZE-1:0][INPUT_SIZE-1:0]
@@ -32,46 +35,40 @@ module dwcv_layer #(
 		[OUTPUT_SIZE-1:0][OUTPUT_SIZE-1:0]
 		[PX_SIZE-1:0] img_out
 );
-	localparam DWCV_INPUT_SIZE = CONV_OUT_SIZE;
-	localparam DWCV_INPUT_CHANNELS = CONV_OUT_CHANNELS;
-	localparam DWCV_OUT_CHANNELS = 8;
-	localparam DWCV_KERNEL_SIZE = 3;
-	localparam DWCV_RAW_SIZE = DWCV_INPUT_SIZE - (DWCV_KERNEL_SIZE-1);
-	localparam DWCV_POOL_SIZE = DWCV_RAW_SIZE / 2;
-	localparam DWCV_OUT_SIZE = DWCV_POOL_SIZE;
-	wire[DWCV_OUT_CHANNELS-1:0]
-		[DWCV_OUT_SIZE-1:0][DWCV_OUT_SIZE-1:0]
-		[PX_SIZE-1:0] dwcv_out;
 
-	wire[DWCV_INPUT_CHANNELS-1:0]
-		[DWCV_KERNEL_SIZE-1:0][DWCV_KERNEL_SIZE-1:0]
+	wire[OUTPUT_CHANNELS-1:0]
+		[OUTPUT_SIZE-1:0][OUTPUT_SIZE-1:0]
+		[PX_SIZE-1:0] out;
+
+	wire[INPUT_CHANNELS-1:0]
+		[KERNEL_SIZE-1:0][KERNEL_SIZE-1:0]
 		[PX_SIZE-1:0] depth_kernels;
 	reg[7:0] depth_kernels_mem[
-		DWCV_INPUT_CHANNELS *
-		DWCV_KERNEL_SIZE * DWCV_KERNEL_SIZE *
+		INPUT_CHANNELS *
+		KERNEL_SIZE * KERNEL_SIZE *
 		PX_SIZE / 8
 		-1:0
 	];
-	wire[DWCV_INPUT_CHANNELS-1:0]
+	wire[INPUT_CHANNELS-1:0]
 		[PX_SIZE-1:0] depth_biases;
 	reg[7:0] depth_biases_mem[
-		DWCV_INPUT_CHANNELS *
+		INPUT_CHANNELS *
 		PX_SIZE / 8
 		-1:0
 	];
-	wire[DWCV_OUT_CHANNELS-1:0]
-		[DWCV_INPUT_CHANNELS-1:0]
+	wire[OUTPUT_CHANNELS-1:0]
+		[INPUT_CHANNELS-1:0]
 		[PX_SIZE-1:0] point_kernels;
 	reg[7:0] point_kernels_mem[
-		DWCV_OUT_CHANNELS *
-		DWCV_INPUT_CHANNELS *
+		OUTPUT_CHANNELS *
+		INPUT_CHANNELS *
 		PX_SIZE / 8
 		-1:0
 	];
-	wire[CONV_OUT_CHANNELS-1:0]
+	wire[CONV_OUTPUT_CHANNELS-1:0]
 		[PX_SIZE-1:0] point_biases;
 	reg[7:0] point_biases_mem[
-		CONV_OUT_CHANNELS *
+		CONV_OUTPUT_CHANNELS *
 		PX_SIZE / 8
 		-1:0
 	];
@@ -122,25 +119,25 @@ module dwcv_layer #(
 				.bias(point_biases[j]),
 				.img_out(img_out)
 			);
-			wire[DWCV_RAW_SIZE-1:0][DWCV_RAW_SIZE-1:0]
-				[DWCV_INPUT_CHANNELS-1:0]
-				[PX_SIZE-1:0] raw_dwcv_out;
-			wire[DWCV_RAW_SIZE-1:0][DWCV_RAW_SIZE-1:0]
-				[PX_SIZE-1:0] relu_dwcv_out;
+			wire[RAW_SIZE-1:0][RAW_SIZE-1:0]
+				[INPUT_CHANNELS-1:0]
+				[PX_SIZE-1:0] raw_out;
+			wire[RAW_SIZE-1:0][RAW_SIZE-1:0]
+				[PX_SIZE-1:0] relu_out;
 			relu_layer #(
-				.INPUT_SIZE(DWCV_RAW_SIZE),
+				.INPUT_SIZE(RAW_SIZE),
 				.PX_SIZE(PX_SIZE)
 			) relu (
-				.img_in(raw_dwcv_out),
-				.img_out(relu_dwcv_out)
+				.img_in(raw_out),
+				.img_out(relu_out)
 			);
 			pool_layer #(
-				.INPUT_SIZE(DWCV_RAW_SIZE),
+				.INPUT_SIZE(RAW_SIZE),
 				.KERNEL_SIZE(2),
 				.PX_SIZE(PX_SIZE)
 			) pool (
-				.img_in(relu_dwcv_out),
-				.img_out(dwcv_out[j])
+				.img_in(relu_out),
+				.img_out(out[j])
 			);
 		end
 	endgenerate

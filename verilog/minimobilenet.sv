@@ -19,10 +19,13 @@ module minimobilenet #(
 		[OUTPUT_CHANNELS-1:0]
 		[PX_SIZE-1:0] img_out
 );
-	localparam CONV_OUT_SIZE = (INPUT_SIZE - (3-1)) / 2;
-	wire[CONV_OUT_SIZE-1:0][CONV_OUT_SIZE-1:0]
-		[3-1:0]
-		[PX_SIZE-1:0] conv_out;
+	localparam KERNEL_SIZE = 3;
+	localparam POOL_KERNEL_SIZE = 2;
+	localparam CONV_OUTPUT_SIZE = (INPUT_SIZE - (KERNEL_SIZE-1)) / POOL_KERNEL_SIZE;
+	localparam CONV_OUTPUT_CHANNELS = 3;
+	localparam DWCV_OUTPUT_SIZE = ((CONV_OUTPUT_SIZE - (KERNEL_SIZE-1)) / 2);
+	localparam DWCV_OUTPUT_CHANNELS = 8;
+
 	full_conv_layer # (
 		.OUTPUT_CHANNELS(3),
 		.INPUT_SIZE(INPUT_SIZE),
@@ -36,55 +39,26 @@ module minimobilenet #(
 		.img_in(img_in),
 		.img_out(conv_out)
 	);
-
 	
 	dwcv_layer #(
-		.INPUT_SIZE(DWCV_INPUT_SIZE),
-		.INPUT_CHANNELS(DWCV_INPUT_CHANNELS),
+		// Legal but unsupported syntax :(
+		// .INPUT_SIZE(conv.OUTPUT_SIZE),
+		// .INPUT_CHANNELS(conv.OUTPUT_CHANNELS),
+		.INPUT_SIZE(CONV_OUTPUT_SIZE),
+		.INPUT_CHANNELS(CONV_OUTPUT_CHANNELS),
 		.KERNEL_SIZE(3),
 		.PX_SIZE(PX_SIZE)
-	) layer (
+	) dwcv (
 		.img_in(conv_out),
-		.img_out(raw_dwcv_out)
+		.img_out(dwcv_out)
 	);
 
-
-	localparam FC_INPUT_SIZE = DWCV_OUT_SIZE;
-	localparam FC_INPUT_CHANNELS = DWCV_OUT_CHANNELS * 2*2;
-	localparam FC_OUT_CHANNELS = 10;
-	localparam FC_OUT_SIZE = DWCV_OUT_SIZE;
-	wire[FC_OUT_CHANNELS-1:0]
-		[FC_OUT_SIZE-1:0][FC_OUT_SIZE-1:0]
-		[PX_SIZE-1:0] fc_out;
-
-	wire
-		[FC_OUT_CHANNELS-1:0]
-		[FC_INPUT_SIZE-1:0][FC_INPUT_SIZE-1:0]
-		[FC_INPUT_CHANNELS-1:0]
-		[PX_SIZE-1:0] fc_weights;
-	reg[7:0] fc_weights_mem[
-		FC_OUT_CHANNELS *
-		FC_INPUT_SIZE * FC_INPUT_SIZE *
-		FC_INPUT_CHANNELS *
-		PX_SIZE / 8
-		-1:0
-	];
-	wire
-		[FC_OUT_CHANNELS-1:0]
-		[PX_SIZE-1:0] fc_biases;
-	reg[7:0] fc_biases_mem[
-		FC_OUT_CHANNELS *
-		PX_SIZE / 8
-		-1:0
-	];
-	initial $readmemh("fixed_weights/fc.weight.coe", fc_weights_mem);
-	initial $readmemh("fixed_weights/fc.bias.coe", fc_biases_mem);
-	assign fc_biases = fc_biases_mem;
-	assign fc_weights = fc_weights_mem;
-
 	fc_layer #(
-		.INPUT_SIZE(FC_INPUT_SIZE),
-		.INPUT_CHANNELS(FC_INPUT_CHANNELS),
+		// Legal but unsupported syntax :(
+		// .INPUT_SIZE(dwcv.OUTPUT_SIZE),
+		// .INPUT_CHANNELS(dwcv.OUTPUT_CHANNELS),
+		.INPUT_SIZE(DWCV_OUTPUT_SIZE),
+		.INPUT_CHANNELS(DWCV_OUTPUT_CHANNELS),
 		.PX_SIZE(PX_SIZE)
 	) fc (
 		.img_in(dwcv_out),
