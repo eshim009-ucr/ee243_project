@@ -20,77 +20,23 @@ module minimobilenet #(
 		[PX_SIZE-1:0] img_out
 );
 	localparam CONV_OUT_SIZE = (INPUT_SIZE - (3-1)) / 2;
-	output wire
-		[CONV_OUT_SIZE-1:0][CONV_OUT_SIZE-1:0]
+	wire[CONV_OUT_SIZE-1:0][CONV_OUT_SIZE-1:0]
 		[3-1:0]
 		[PX_SIZE-1:0] conv_out;
 	full_conv_layer # (
 		.OUTPUT_CHANNELS(3),
 		.INPUT_SIZE(INPUT_SIZE),
 		.INPUT_CHANNELS(INPUT_CHANNELS),
-		.KERNEL_SIZE(3)
+		.KERNEL_SIZE(3),
 		.PX_SIZE(PX_SIZE),
 		.POOL_KERNEL_SIZE(2),
 		.KERNEL_MEM_FILE("fixed_weights/conv1.weight.coe"),
-		.BIAS_MEM_FILE("fixed_weights/conv1.weight.coe"),
+		.BIAS_MEM_FILE("fixed_weights/conv1.weight.coe")
 	) conv (
-	input wire
 		.img_in(img_in),
 		.img_out(conv_out)
 	);
 
-
-	localparam DWCV_INPUT_SIZE = CONV_OUT_SIZE;
-	localparam DWCV_INPUT_CHANNELS = CONV_OUT_CHANNELS;
-	localparam DWCV_OUT_CHANNELS = 8;
-	localparam DWCV_KERNEL_SIZE = 3;
-	localparam DWCV_RAW_SIZE = DWCV_INPUT_SIZE - (DWCV_KERNEL_SIZE-1);
-	localparam DWCV_POOL_SIZE = DWCV_RAW_SIZE / 2;
-	localparam DWCV_OUT_SIZE = DWCV_POOL_SIZE;
-	wire[DWCV_OUT_CHANNELS-1:0]
-		[DWCV_OUT_SIZE-1:0][DWCV_OUT_SIZE-1:0]
-		[PX_SIZE-1:0] dwcv_out;
-
-	wire[DWCV_INPUT_CHANNELS-1:0]
-		[DWCV_KERNEL_SIZE-1:0][DWCV_KERNEL_SIZE-1:0]
-		[PX_SIZE-1:0] depth_kernels;
-	reg[7:0] depth_kernels_mem[
-		DWCV_INPUT_CHANNELS *
-		DWCV_KERNEL_SIZE * DWCV_KERNEL_SIZE *
-		PX_SIZE / 8
-		-1:0
-	];
-	wire[DWCV_INPUT_CHANNELS-1:0]
-		[PX_SIZE-1:0] depth_biases;
-	reg[7:0] depth_biases_mem[
-		DWCV_INPUT_CHANNELS *
-		PX_SIZE / 8
-		-1:0
-	];
-	wire[DWCV_OUT_CHANNELS-1:0]
-		[DWCV_INPUT_CHANNELS-1:0]
-		[PX_SIZE-1:0] point_kernels;
-	reg[7:0] point_kernels_mem[
-		DWCV_OUT_CHANNELS *
-		DWCV_INPUT_CHANNELS *
-		PX_SIZE / 8
-		-1:0
-	];
-	wire[CONV_OUT_CHANNELS-1:0]
-		[PX_SIZE-1:0] point_biases;
-	reg[7:0] point_biases_mem[
-		CONV_OUT_CHANNELS *
-		PX_SIZE / 8
-		-1:0
-	];
-	initial $readmemh("fixed_weights/conv2.depthwise.weight.coe", depth_kernels_mem);
-	initial $readmemh("fixed_weights/conv2.depthwise.bias.coe", depth_biases_mem);
-	initial $readmemh("fixed_weights/conv2.pointwise.weight.coe", point_kernels_mem);
-	initial $readmemh("fixed_weights/conv2.pointwise.bias.coe", point_biases_mem);
-	assign depth_kernels = depth_kernels_mem;
-	assign depth_biases = depth_biases_mem;
-	assign point_kernels = point_kernels_mem;
-	assign point_biases = point_biases_mem;
 	
 	dwcv_layer #(
 		.INPUT_SIZE(DWCV_INPUT_SIZE),
@@ -99,37 +45,8 @@ module minimobilenet #(
 		.PX_SIZE(PX_SIZE)
 	) layer (
 		.img_in(conv_out),
-		.depth_kernels(depth_kernels),
-		.depth_biases(depth_biases),
-		.point_kernels(point_kernels),
-		.point_biases(point_biases),
 		.img_out(raw_dwcv_out)
 	);
-	genvar j;
-	generate
-		for (i = 0; i < DWCV_OUT_CHANNELS; i += 1) begin
-			wire[DWCV_RAW_SIZE-1:0][DWCV_RAW_SIZE-1:0]
-				[DWCV_INPUT_CHANNELS-1:0]
-				[PX_SIZE-1:0] raw_dwcv_out;
-			wire[DWCV_RAW_SIZE-1:0][DWCV_RAW_SIZE-1:0]
-				[PX_SIZE-1:0] relu_dwcv_out;
-			relu_layer #(
-				.INPUT_SIZE(DWCV_RAW_SIZE),
-				.PX_SIZE(PX_SIZE)
-			) relu (
-				.img_in(raw_dwcv_out),
-				.img_out(relu_dwcv_out)
-			);
-			pool_layer #(
-				.INPUT_SIZE(DWCV_RAW_SIZE),
-				.KERNEL_SIZE(2),
-				.PX_SIZE(PX_SIZE)
-			) pool (
-				.img_in(relu_dwcv_out),
-				.img_out(dwcv_out[j])
-			);
-		end
-	endgenerate
 
 
 	localparam FC_INPUT_SIZE = DWCV_OUT_SIZE;

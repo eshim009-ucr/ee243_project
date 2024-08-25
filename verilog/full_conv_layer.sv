@@ -3,7 +3,7 @@
 // Mutli-Channel Convolutional Layer with Pool and Rectifier
 module full_conv_layer #(
     // Number of channels in the resulting image
-    parameter OUTPUT_CHANNELS = 3;
+    parameter OUTPUT_CHANNELS = 3,
 	// Input size, assumed to be square
 	parameter INPUT_SIZE = 32,
 	// Input image channels/features
